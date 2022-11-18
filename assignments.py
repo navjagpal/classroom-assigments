@@ -55,6 +55,7 @@ def GetStudents(students_file):
 
 parser = argparse.ArgumentParser(description='Assign students to classrooms.')
 parser.add_argument('--students_file', type=open, required=True)
+parser.add_argument('--num_classes', type=int, required=True)
 parser.add_argument('--assignments_file',
   type=argparse.FileType('w', encoding='UTF-8'), required=True)
 parser.add_argument('--classrooms_file',
@@ -64,39 +65,37 @@ args = parser.parse_args()
 
 def main():
   students = GetStudents(args.students_file)
-  num_classes = 10
   classes_to_students = assignments_lib.generate_assignments(
-    students, num_classes, FEATURE_COLUMNS)
+    students, args.num_classes, FEATURE_COLUMNS)
 
   assignments_writer = csv.writer(args.assignments_file, delimiter=',')
   assignments_writer.writerow(['Classroom', 'StudentNumber', 'Name'] + list(FEATURE_COLUMNS.keys()))
 
-  with open('classrooms.csv', 'w', newline='') as classrooms_csvfile:
-    classrooms_writer = csv.writer(classrooms_csvfile, delimiter=',')
-    classrooms_writer.writerow(['Classroom', 'Size'] + list(FEATURE_COLUMNS.keys()))
-  
-    print(classes_to_students)
-    for i in range(num_classes):
-      print('%d: %d' % (i, len(classes_to_students[i])))
-      features = {}
+  classrooms_writer = csv.writer(args.classrooms_file, delimiter=',')
+  classrooms_writer.writerow(['Classroom', 'Size'] + list(FEATURE_COLUMNS.keys()))
+
+  print(classes_to_students)
+  for i in range(args.num_classes):
+    print('%d: %d' % (i, len(classes_to_students[i])))
+    features = {}
+    for feature in FEATURE_COLUMNS:
+      features[feature] = 0
+    for sid in classes_to_students[i]:
+      row = [i, sid, students[sid]['name']]
       for feature in FEATURE_COLUMNS:
-        features[feature] = 0
-      for sid in classes_to_students[i]:
-        row = [i, sid, students[sid]['name']]
-        for feature in FEATURE_COLUMNS:
-          column = FEATURE_COLUMNS[feature]['Column']
-          value = FEATURE_COLUMNS[feature]['Value']
-          if students[sid][column] == value:
-            features[feature] += 1
-            row.append(1)
-          else:
-            row.append(0)
-        assignments_writer.writerow(row)
-      row = [i, len(classes_to_students[i])]
-      for feature in features:
-        print('\t%s:%d' % (feature, features[feature]))
-        row.append(features[feature])
-      classrooms_writer.writerow(row)
+        column = FEATURE_COLUMNS[feature]['Column']
+        value = FEATURE_COLUMNS[feature]['Value']
+        if students[sid][column] == value:
+          features[feature] += 1
+          row.append(1)
+        else:
+          row.append(0)
+      assignments_writer.writerow(row)
+    row = [i, len(classes_to_students[i])]
+    for feature in features:
+      print('\t%s:%d' % (feature, features[feature]))
+      row.append(features[feature])
+    classrooms_writer.writerow(row)
 
 
 if __name__ == '__main__':
