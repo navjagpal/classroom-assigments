@@ -21,7 +21,7 @@ def generate_assignments(request):
     feature_values = request.json["feature_values"]
     students = {}
     for student in request.json["students"]:
-      students[student["id"]] = student
+        students[student["id"]] = student
     num_classes = request.json["num_classes"]
     classes_to_students = assignments_lib.generate_assignments(
         students, num_classes, feature_values, 30)
