@@ -31,7 +31,7 @@ def generate_assignments(students, num_classes, feature_columns, time_limit_seco
 
     # Handle specific classroom assignments, forcing some students into some classes.
     for sid in students:
-        if students[sid]['Classroom'] != '':
+        if students[sid].get('Classroom', '') != '':
             cid = int(students[sid]['Classroom'])
             solver.Add(x[sid, cid] == 1)
 

@@ -1,9 +1,10 @@
 import argparse
-import assignments_lib
 import collections
 import csv
 import json
 import sys
+
+from assignments import assignments_lib
 
 
 def parse_args():
