@@ -1,0 +1,20 @@
+{
+  "feature_values": {    
+    "Male": {"Column": "Sexe", "Value": "Masculin"},
+    "Francophone": {"Column": "Francophone", "Value": "Oui"},
+    "Daycare": {"Column": "Garderie", "Value": "Oui"}
+  },
+  "students": [
+    {"id": "12345", "Sexe": "Masculin", "Francophone": "Oui", "Garderie": "Non"},
+    {"id": "12346", "Sexe": "Masculin", "Francophone": "Oui", "Garderie": "Non"},
+    {"id": "12347", "Sexe": "Masculin", "Francophone": "Oui", "Garderie": "Non"},
+    {"id": "12348", "Sexe": "Masculin", "Francophone": "Oui", "Garderie": "Non"},
+    {"id": "12349", "Sexe": "Masculin", "Francophone": "Oui", "Garderie": "Non"},
+    {"id": "12350", "Sexe": "Masculin", "Francophone": "Oui", "Garderie": "Non"},
+    {"id": "12351", "Sexe": "Masculin", "Francophone": "Oui", "Garderie": "Non"},
+    {"id": "12352", "Sexe": "Masculin", "Francophone": "Oui", "Garderie": "Non"},
+    {"id": "12353", "Sexe": "Masculin", "Francophone": "Oui", "Garderie": "Non"},
+    {"id": "12354", "Sexe": "Masculin", "Francophone": "Oui", "Garderie": "Oui"}
+  ],
+  "num_classes": 2
+}
