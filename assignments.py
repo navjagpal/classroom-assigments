@@ -7,7 +7,8 @@ import sys
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Assign students to classrooms.')
+    parser = argparse.ArgumentParser(
+        description='Assign students to classrooms.')
     parser.add_argument('--students_file', type=open, required=True)
     parser.add_argument('--features_file', type=open, required=True)
     parser.add_argument('--num_classes', type=int, required=True)
