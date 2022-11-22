@@ -3,10 +3,12 @@
   <head>
   <link rel="stylesheet" href=
   "https://unpkg.com/gridjs/dist/theme/mermaid.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
   <script src=
   "https://unpkg.com/papaparse@5.3.2/papaparse.min.js"></script>
   <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
   <script>
         var data = undefined;
         var featureValues = undefined;
@@ -28,15 +30,20 @@
                 var el = document.createElement("input");
                 el.type = "checkbox";
                 el.name = "column";
+                el.className = "form-check-input";
                 el.value = x;
                 el.id = "column-" + x;
                 el.value = x;
                 el.addEventListener("click", updateFeatures);
                 var label = document.createElement("label");
                 label.htmlFor = el.id;
+                label.className = "form-check-label";
                 label.appendChild(document.createTextNode(x));
-                select.appendChild(el);
-                select.appendChild(label);
+                var div = document.createElement("div");
+                div.className = "form-check";
+                div.appendChild(el);
+                div.appendChild(label);
+                select.appendChild(div);
               }
             }
           });
@@ -121,11 +128,16 @@
             checkbox.value = feature;
             checkbox.id = "feature-" + feature;
             checkbox.checked = true;
+            checkbox.className = "form-check-input";
             var label = document.createElement("label");
             label.htmlFor = checkbox.id;
             label.appendChild(document.createTextNode(feature));
-            select.appendChild(checkbox);
-            select.appendChild(label);
+            label.className = "form-check-label";
+            var div = document.createElement("div");
+            div.className = "form-check";
+            div.appendChild(checkbox);
+            div.appendChild(label);
+            select.appendChild(div);
           }
         }
 
@@ -137,10 +149,19 @@
   <title></title>
   </head>
 <body>
-  <input type="file" id="file-input"> <label for="num_classes">Number
-  of classes:</label> <input id="num_classes" type="text" value="10">
-  <fieldset id="columns"><legend>Columns</legend></fieldset>
-  <fieldset id="features"><legend>Features</legend></fieldset>
+  <div class="form-group">
+    <input type="file" id="file-input" class="form-control">
+  </div>
+  <div class="form-group">
+    <label for="num_classes">Number of classes</label>
+    <input id="num_classes" class="form-control" type="text" value="10">
+  </div>
+  <div class="form-group">
+    <fieldset id="columns"><legend>Columns</legend></fieldset>
+  </div>
+  <h2>Features</h2>
+  <div class="form-group" id="features">
+  </div>
   <button onclick="submit()">Generate Assignments</button>
   <div id="results"></div>
 </body>
