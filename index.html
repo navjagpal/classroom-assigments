@@ -1,111 +1,147 @@
+<!DOCTYPE html>
 <html>
   <head>
-    <script src="https://unpkg.com/papaparse@5.3.2/papaparse.min.js"></script>
+  <link rel="stylesheet" href=
+  "https://unpkg.com/gridjs/dist/theme/mermaid.min.css">
+  <script src=
+  "https://unpkg.com/papaparse@5.3.2/papaparse.min.js"></script>
+  <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+  <script>
+        var data = undefined;
+        var featureValues = undefined;
 
-    <script>
-			var data = undefined;
-			var featureValues = undefined;
+        function readSingleFile(e) {
+          var file = e.target.files[0];
+          if (!file) {
+            return;
+          }
+          Papa.parse(file, {
+            header: true,
+            complete: function(results) {
+              students = {};
+              featureValues = {};
+              data = results.data;
+              console.log(results.data);
+              var select = document.getElementById("columns");
+              for (const x of Object.keys(results.data[0])) {
+                var el = document.createElement("input");
+                el.type = "checkbox";
+                el.name = "column";
+                el.value = x;
+                el.id = "column-" + x;
+                el.value = x;
+                el.addEventListener("click", updateFeatures);
+                var label = document.createElement("label");
+                label.htmlFor = el.id;
+                label.appendChild(document.createTextNode(x));
+                select.appendChild(el);
+                select.appendChild(label);
+              }
+            }
+          });
+        }
 
-			function readSingleFile(e) {
-				var file = e.target.files[0];
-				if (!file) {
-					return;
-				}
-				Papa.parse(file, {
-					header: true,
-					complete: function(results) {
-						featureValues = {};
-						data = results.data;
-						console.log(results.data);
-						var select = document.getElementById("columns");
-						for (const x of Object.keys(results.data[0])) {
-							var el = document.createElement("input");
-							el.type = "checkbox";
-							el.name = "column";
-							el.value = x;
-							el.id = "column-" + x;
-							el.value = x;
-							var label = document.createElement("label");
-							label.htmlFor = el.id;
-							label.appendChild(document.createTextNode(x));
-							select.appendChild(el);
-							select.appendChild(label);
-						}
-					}
-				});
-			}
+        function submit() {
+          var checkboxes = document.getElementsByName("feature");
+          var selectedFeatures = {};
+          for (const checkbox of checkboxes) {
+            selectedFeatures[checkbox.value] = featureValues[checkbox.value];
+          }
+          var numClasses = parseInt(document.getElementById("num_classes").value);
+          $.ajax({
+            url: "https://generate-assignments-6ughy77jeq-ue.a.run.app",
+            dataType: "json",
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify({
+              "feature_values": selectedFeatures,
+              num_classes: numClasses,
+              students: data
+            }),
+            success: function(data, textStatus, jqxhr) {
+              var rows = [];
+              for (var classroom of Object.keys(data)) {
+                data[classroom].forEach(function(value, i) {
+                  if (rows.length < i+1) {
+                    rows.push([]);
+                  }
+                  rows[i].push(value);
+                });  
+              }
+              new gridjs.Grid({
+                columns: [...Array(numClasses).keys()].map(x => "Class #" + (x+1)),
+                data: rows
+              }).render(document.getElementById("results"));
+            },
+            error: function(jqhxr, textStatus, errorThrown) {
+              console.log(errorThrown);
+            }
+          });
+        }
 
-			function submit() {
-				console.log("Send to RPC service");
-			}
+        function updateFeatures() {
+          console.log("Features size: " + document.getElementsByName("feature").length);
+          var features = {};
+          var checkboxes = document.getElementsByName("column");
+          for (const checkbox of checkboxes) {
+            if (checkbox.checked) {
+              features[checkbox.value] = new Set();
+            }
+          }
+          for (const row of data) {
+            for (const feature of Object.keys(features)) {
+              features[feature].add(row[feature].trim());
+            }
+          }
+          featureValues = {};
+          for (const feature of Object.keys(features)) {
+            // Size == 1 => bad column?
+            if (features[feature].size == 2) {
+              featureValues[feature] = {
+                "Column": feature,
+                "Value": features[feature].values().next().value,
+              };
+            } else if (features[feature].size > 2) {
+              for (const value of features[feature].values()) {
+                featureValues[feature + "_" + value] = {
+                  "Column": feature,
+                  "Value": value
+                };
+              }
+            }
+          }
+          console.log(featureValues);
+          var select = document.getElementById("features");
+          select.innerHTML = "";
+          for (const feature of Object.keys(featureValues)) {
+            var checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.name = "feature";
+            checkbox.value = feature;
+            checkbox.id = "feature-" + feature;
+            checkbox.checked = true;
+            var label = document.createElement("label");
+            label.htmlFor = checkbox.id;
+            label.appendChild(document.createTextNode(feature));
+            select.appendChild(checkbox);
+            select.appendChild(label);
+          }
+        }
 
-			function generate() {
-				if (document.getElementsByName("feature").length >= 1) {
-					return submit();
-				}
-				console.log("Features size: " + document.getElementsByName("feature").length);
-				var features = {};
-				var checkboxes = document.getElementsByName("column");
-				for (const checkbox of checkboxes) {
-					if (checkbox.checked) {
-						features[checkbox.value] = new Set();
-					}
-				}
-				for (const row of data) {
-					for (const feature of Object.keys(features)) {
-						features[feature].add(row[feature].trim());
-					}
-				}
-				featureValues = {};
-				for (const feature of Object.keys(features)) {
-					// Size == 1 => bad column?
-					if (features[feature].size == 2) {
-						featureValues[feature] = {
-							"Column": feature,
-							"Value": features[feature].values().next().value,
-						};
-					} else if (features[feature].size > 2) {
-						for (const value of features[feature].values()) {
-							featureValues[feature + "_" + value] = {
-								"Column": feature,
-								"Value": value
-							};
-						}
-					}
-				}
-				console.log(featureValues);
-				var select = document.getElementById("features");
-				for (const feature of Object.keys(featureValues)) {
-					var checkbox = document.createElement("input");
-					checkbox.type = "checkbox";
-					checkbox.name = "feature";
-					checkbox.value = feature;
-					checkbox.id = "feature-" + feature;
-					var label = document.createElement("label");
-					label.htmlFor = checkbox.id;
-					label.appendChild(document.createTextNode(feature));
-					select.appendChild(checkbox);
-					select.appendChild(label);
-				}
-			}
-
-			document.getElementById('file-input')
-				.addEventListener('change', readSingleFile, false);
-    </script>
+        document.addEventListener("DOMContentLoaded", () => {
+          document.getElementById('file-input')
+            .addEventListener('change', readSingleFile, false);
+        });
+  </script>
+  <title></title>
   </head>
-  <body>
-
-    <input type="file" id="file-input"/>
-    
-		<fieldset id="columns">
-      <legend>Columns</legend>  
-    </fieldset>
-
-    <fieldset id="features">
-      <legend>Features</legend>  
-    </fieldset>
-
-    <button onclick="generate()">Generate Assignments</button>
-
-  </body>
+<body>
+  <input type="file" id="file-input"> <label for="num_classes">Number
+  of classes:</label> <input id="num_classes" type="text" value="10">
+  <fieldset id="columns"><legend>Columns</legend></fieldset>
+  <fieldset id="features"><legend>Features</legend></fieldset>
+  <button onclick="submit()">Generate Assignments</button>
+  <div id="results"></div>
+</body>
 </html>
