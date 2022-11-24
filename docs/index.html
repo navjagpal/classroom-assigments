@@ -322,6 +322,7 @@ $(".submit").click(function(){
   <script>
         var data = undefined;
         var featureValues = undefined;
+        const RESERVED_COLUMNS = ["name", "id", "Classroom"];
 
         function readSingleFile(e) {
           var file = e.target.files[0];
@@ -337,6 +338,9 @@ $(".submit").click(function(){
               console.log(results.data);
               var select = document.getElementById("columns");
               for (const x of Object.keys(results.data[0])) {
+                if (RESERVED_COLUMNS.includes(x)) {
+                  continue;
+                }
                 var el = document.createElement("input");
                 el.type = "checkbox";
                 el.name = "column";
@@ -580,6 +584,9 @@ $(".submit").click(function(){
                 <div class="row">
                   <div class="col-7">
                     <h2 class="fs-title">Assignments</h2>
+                   </div>
+                   <div class="col-7">
+                     <p>It can take up to 30 seconds to generate assignments. Please be patient.</p>
                    </div>
                    <div id="loading" style="visibility: hidden;" class="spinner-border" role="status"></div>
                    <a id="download-button" target="_blank" style="visibility: hidden;">Download</a>
