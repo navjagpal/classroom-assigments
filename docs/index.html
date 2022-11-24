@@ -559,6 +559,9 @@ $(".submit").click(function(){
                     <h2 class="steps">Step 2 - 4</h2>
                   </div>
                 </div>
+                <div class="col-7">
+                  <p>Select the columns to be used for allocating students across classrooms. The features from these columns will be used to evenly distribute students.</p> 
+                </div>
                 <div id="columns"></div>
               </div>
               <input type="button" name="next" class="next action-button" value="Next"/>
@@ -573,6 +576,9 @@ $(".submit").click(function(){
                   <div class="col-5">
                     <h2 class="steps">Step 3</h2>
                   </div>
+                </div>
+                <div class="col-7">
+                  <p>Select the features to be used for assigning students to classrooms. Columns with only two possible values will have only a single feature listed, but columns with more than two values will have multiple features listed. This is because you may only want to use a subset of those features as the criteria. An example might be a <i>Language</i> column which has 10 possible values, but you only want to distribute students based on 1 or 2 of the possible values (ie. evenly distribute the English speakers across all classroom).</p>
                 </div>
                 <div id="features"></div>
               </div>
