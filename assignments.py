@@ -45,7 +45,6 @@ def main():
     classrooms_writer.writerow(
         ['Classroom', 'Size'] + list(feature_columns.keys()))
 
-    print(classes_to_students)
     for i in range(args.num_classes):
         print('%d: %d' % (i, len(classes_to_students[i])))
         features = collections.defaultdict(int)
