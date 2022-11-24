@@ -42,8 +42,8 @@ def generate_assignments(request):
         students[student['id']] = student
     num_classes = request.json['num_classes']
     try:
-      classes_to_students = assignments_lib.generate_assignments(
-          students, num_classes, feature_values, 30)
+        classes_to_students = assignments_lib.generate_assignments(
+            students, num_classes, feature_values, 30)
     except assignments_lib.AssignmentsError as e:
-      return ({'error': str(e)}, e.code, headers)
+        return ({'error': str(e)}, e.code, headers)
     return (classes_to_students, 200, headers)
