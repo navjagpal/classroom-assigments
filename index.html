@@ -179,12 +179,12 @@ p {
     content: "\f183";
 }
 
-#progressbar #columns:before {
+#progressbar #columns-icon:before {
     font-family: FontAwesome;
     content: "\f0db";
 }
 
-#progressbar #features:before {
+#progressbar #features-icon:before {
     font-family: FontAwesome;
     content: "\f0c9";
 }
@@ -387,6 +387,20 @@ $(".submit").click(function(){
           }).render(document.getElementById("stats"));
         }
 
+        function setDownloadButton(data) {
+          var download = document.getElementById("download-button");
+          var rows = [["Classroom", "Student"]];
+          for (var classroom of Object.keys(data)) {
+            data[classroom].forEach(function(value, i) {
+              rows.push([classroom, value]);
+            });
+          }
+          download.href = "data:text/plain;charset=UTF-8," + encodeURIComponent(
+            Papa.unparse(rows));
+          download.download = "assignments.csv";
+          download.style.visibility = "visible";
+        }
+
         function submit() {
           var checkboxes = document.getElementsByName("feature");
           var selectedFeatures = {};
@@ -407,6 +421,7 @@ $(".submit").click(function(){
             }),
             success: function(data, textStatus, jqxhr) {
               document.getElementById("loading").style.visibility = "hidden";
+              setDownloadButton(data);
               var rows = [];
               for (var classroom of Object.keys(data)) {
                 data[classroom].forEach(function(value, i) {
@@ -424,6 +439,7 @@ $(".submit").click(function(){
             },
             error: function(jqhxr, textStatus, errorThrown) {
               console.log(errorThrown);
+              alert("Error");
             }
           });
         }
@@ -496,8 +512,8 @@ $(".submit").click(function(){
             <!-- progressbar -->
             <ul id="progressbar">
               <li class="active" id="students"><strong>Students File</strong></li>
-              <li id="columns"><strong>Columns</strong></li>
-              <li id="features"><strong>Features</strong></li>
+              <li id="columns-icon"><strong>Columns</strong></li>
+              <li id="features-icon"><strong>Features</strong></li>
               <li id="assignments"><strong>Assignments</strong></li>
             </ul>
             <div class="progress">
@@ -558,6 +574,7 @@ $(".submit").click(function(){
                     <h2 class="fs-title">Assignments</h2>
                    </div>
                    <div id="loading" style="visibility: hidden;" class="spinner-border" role="status"></div>
+                   <a id="download-button" target="_blank" style="visibility: hidden;">Download</a>
                    <div id="results"></div>
                    <div id="stats"></div>
                 </div>
