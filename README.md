@@ -3,8 +3,15 @@ Tool to help assign students to classrooms which distributes the children using 
 
 The code was heavily inspired by the paper [An optimization-based DSS for student-to-teacher assignment: Classroom heterogeneity and teacher performance measures](https://www.researchgate.net/publication/331538110_An_optimization-based_DSS_for_student-to-teacher_assignment_Classroom_heterogeneity_and_teacher_performance_measures), and this [spreadsheet](https://github.com/MattDBailey/PrincipalDSS) from the paper. The author of the paper, [@MattDBailey](https://github.com/MattDBailey), was responsive over email to help answer some questions about the paper and the spreadsheet. We thank him for his help, and for publishing his work. This approach has saved a local Montreal elementary school countless hours of work every year. 
 
+# Simple web page
+The simplest and fastest way to get a sense for what this tool can do is to visit [https://navjagpal.github.io/classroom-assignments](https://navjagpal.github.io/classroom-assignments) and upload a CSV file with a list of students and characteristics. You can experiment with this [sample file](https://github.com/navjagpal/classroom-assigments/blob/main/students.csv).
+
+Here are some guidelines for the file format:
+* `id` column which is a unique identifier for each student [Required]
+* `Classroom` column can be used to assign students to specific classsrooms [Optional]. The value must be between [0, num_classes). For example, if num_classes=10, then the value in the `Classroom` column must be between 0 and 9.
+
 # Run example request against the live API
-This is the simplest way to interact with the logic without having to install any dependencies.
+This is a way to interact with the logic without having to install any dependencies.
 
 ```
 curl -v -X POST -H "Content-Type: application/json" \
