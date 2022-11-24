@@ -437,9 +437,14 @@ $(".submit").click(function(){
               }).render(document.getElementById("results"));
               displayStats(data);
             },
-            error: function(jqhxr, textStatus, errorThrown) {
+            error: function(jqXHR, textStatus, errorThrown) {
               console.log(errorThrown);
-              alert("Error");
+              if (jqXHR.status == 400) {
+                var errorJson = JSON.parse(jqXHR.responseText);
+                alert("Bad input:" + errorJson["error"]);
+              } else {
+                alert("Unexpected error:" + jqXHR.responseText);
+              }
             }
           });
         }

@@ -2,6 +2,13 @@ import collections
 from ortools.linear_solver import pywraplp
 
 
+class AssignmentsError(Exception):
+
+    def __init__(self, code, msg):
+        super(AssignmentsError, self).__init__(msg)
+        self.code = code
+    
+
 def get_size_equality_constraints(name, solver, assignments, students, num_classes):
     target_size = len(students)/float(num_classes)
     deviations = []
@@ -33,6 +40,10 @@ def generate_assignments(students, num_classes, feature_columns, time_limit_seco
     for sid in students:
         if students[sid].get('Classroom', '') != '':
             cid = int(students[sid]['Classroom'])
+            if cid < 0 or cid >= num_classes:
+                raise AssignmentsError(
+                    400, 'Invalid classroom assignment for student %s:%d' %  (
+                        sid, cid))
             solver.Add(x[sid, cid] == 1)
 
     objective_terms = []
