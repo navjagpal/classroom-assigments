@@ -12,6 +12,8 @@ Here are some guidelines for the file format:
 * `id` column which is a unique identifier for each student [Required]
 * `Classroom` column can be used to assign students to specific classsrooms [Optional]. The value must be between [0, num_classes). For example, if num_classes=10, then the value in the `Classroom` column must be between 0 and 9.
 
+![image](https://user-images.githubusercontent.com/15254853/203821087-88dcd0ee-0980-4a52-9f1c-23ef0908dc60.png)
+
 # Run example request against the live API
 This is a way to interact with the logic without having to install any dependencies.
 
@@ -40,6 +42,12 @@ python3 assignments.py \
   --time_limit_seconds=30 \
   --features_file=features.json
 ```
+
+![image](https://user-images.githubusercontent.com/15254853/203821385-c75f91b7-9af2-4615-8e99-8c69596fcf0c.png)
+
+![image](https://user-images.githubusercontent.com/15254853/203821470-7d4ca1f9-9bd9-4b35-b4b1-8d1c38da1420.png)
+
+![image](https://user-images.githubusercontent.com/15254853/203821531-3e4673ea-c655-4f61-b90f-448429edc3fd.png)
 
 # Run the cloud function locally
 
